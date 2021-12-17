@@ -113,7 +113,7 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-def _create_dict_instance(self, line):
+    def _create_dict_instance(self, line):
         """ parse user input """
         new_dict = {}
         for item in line:
@@ -144,8 +144,8 @@ def _create_dict_instance(self, line):
         elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        dict = self._create_dict_instance(args[1:])
-        new_instance = HBNBCommand.classes[args[0]](**dict)
+        new_dict = self._create_dict_instance(args[1:])
+        new_instance = HBNBCommand.classes[args[0]](**new_dict)
         print(new_instance.id)
         new_instance.save()
 
