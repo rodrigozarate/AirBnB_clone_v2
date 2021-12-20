@@ -8,11 +8,14 @@ from sqlalchemy import Column, String, DateTime
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
     id = Column(String(60), nullable=False, primary_key=True)
-    created_at = Column(DateTime(60), nullable=False, default=datetime.utcnow())
+    created_at = Column(DateTime(60), nullable=False,
+                        default=datetime.utcnow())
     updated_at = Column(DateTime(60), nullable=False, default=created_at)
+
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         self.id = str(uuid.uuid4())
@@ -47,4 +50,10 @@ class BaseModel:
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        if "_sa_instance_state" in dictionary.keys():
+            del dictionary["_sa_instance_state"]
         return dictionary
+
+    def delete(self):
+        """deletes the current instance from the storage"""
+        models.storage.delete(self)
