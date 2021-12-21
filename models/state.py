@@ -18,6 +18,8 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
+            """getter that returns the list of City instances with
+            state_id equals to the current State.id"""
             cities_list = []
             all_cities = models.storage.all(City)
             for value in all_cities.values():
