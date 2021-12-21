@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """ Console Module """
-import re
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -38,7 +37,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -114,60 +112,42 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def _create_dict_instance(self, line):
-        """ parse user input """
-        new_dict = {}
-        for item in line:
-            if "=" in item:
-                new_arg = item.split("=", 1)
-                key = new_arg[0]
-                value = new_arg[1]
-                if value[0] == '"' == value[-1]:
-                    value = value.replace('"', "").replace("_", " ")
-                else:
-                    try:
-                        value = int(value)
-                    except Exception:
-                        try:
-                            value = float(value)
-                        except Exception:
-                            continue
-                new_dict[key] = value
-        return new_dict
-
     def do_create(self, args):
         """ Create an object of any class"""
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
-        try:
-            args = re.split("\s|=", args)
-            new_instance = eval(args[0])()
-
-            for values in range(1, len(args), 2):
-                key = args[values]
-                value = args[values + 1]
-                try:
-                    new_instance.__getattribute__(key)
-                except AttributeError:
-                    continue
-
-                if re.search("^\".*\"$", value) is not None:
-                    value = value.replace("_", " ")
-                    value = value.replace("\"", "")
-                elif "." in value:
-                    value = float(value)
-                elif re.search("\d.*", value) is not None:
-                    value = int(value)
-                else:
-                    continue
-                setattr(new_instance, key, value)
-            new_instance.save()
-            print(new_instance.id)
-
-        except NameError:
+        elif args.split(' ')[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
+        new_instance = HBNBCommand.classes[args.split(' ')[0]]()
+        parameters = self.parameters_divided(args)
+        # print(parameters)
+        for i in parameters:
+            setattr(new_instance, i[0], i[1])
+        storage.save()
+        print(new_instance.id)
+        storage.save()
+
+    def parameters_divided(self, args):
+        new_list = []
+        for i in args.split(' ')[1:]:
+            new_list.append(i.split('='))
+        for i in new_list:
+            if '\"' in i[1]:
+                i[1] = i[1].replace('"', '')
+                i[1] = i[1].replace('_', ' ')
+            elif "." in i[1]:
+                try:
+                    i[1] = float(i[1])
+                except Exception:
+                    new_list.remove(i)
+            else:
+                try:
+                    i[1] = int(i[1])
+                except Exception:
+                    new_list.remove(i)
+        return new_list
 
     def help_create(self):
         """ Help information for the create method """
@@ -315,7 +295,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
