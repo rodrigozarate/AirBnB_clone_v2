@@ -3,7 +3,8 @@
 from sqlalchemy import create_engine
 from os import getenv
 from models.base_model import BaseModel, Base
-from sqlalchemy.orm.session import sessionmaker, Session
+from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 class DBStorage:
@@ -49,3 +50,21 @@ class DBStorage:
                     objects_dict.update({key: object})
 
         return(objects_dict)
+
+    def new(self, obj):
+        """Adds the object to the current database session"""
+        self.__session.add(obj)
+
+    def save(self):
+        """Commits all changes of the current database session """
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """Deletes from the current database session obj if not None"""
+        if obj is not None:
+            self.__session.delete(obj)
+
+    def reload(self):
+        Base.metadata.create_all(self.__engine)
+        self.__session = scoped_session(sessionmaker(bind=self.__engine,
+                                                     expire_on_commit=False))
