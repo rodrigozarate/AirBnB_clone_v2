@@ -2,7 +2,7 @@
 """ Packing using Fabric """
 
 from fabric.api import local
-import datetime
+from datetime import datetime
 
 
 def do_pack():
