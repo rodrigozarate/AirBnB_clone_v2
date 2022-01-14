@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ Packing using Fabric """
 
-import datetime
 from fabric.api import local
+import datetime
 
 
 def do_pack():
