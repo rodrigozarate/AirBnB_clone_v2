@@ -42,7 +42,7 @@ class DBStorage():
         from models.state import State
         from models.user import User
 
-        new_dictionary = {}
+        dictionary = {}
         
         if cls is None:
             result = self.__session.query(
