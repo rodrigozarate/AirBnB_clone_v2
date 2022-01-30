@@ -15,10 +15,7 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
-            """ Getter attribute cities that returns
-                the list of City instances with state_id
-                equals to the current State.id
-            """
+            """ Getter attribute cities """
             from models import storage
             from models.city import City
             list = []
