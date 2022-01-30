@@ -32,7 +32,7 @@ def pythoniscool(text):
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def number(n);
+def number(n):
     """ /number route """
     return "{} is a number".format(n)
 
