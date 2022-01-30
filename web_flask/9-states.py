@@ -13,6 +13,7 @@ def storage_close(self):
     """ Data from source """
     storage.close()
 
+
 @app.route('/states', strict_slashes=False)
 def states():
     """ /states path """
