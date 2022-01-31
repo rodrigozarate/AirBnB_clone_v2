@@ -43,7 +43,7 @@ class DBStorage():
         from models.user import User
 
         dictionary = {}
-        
+ 
         if cls is None:
             result = self.__session.query(
                      Amenity, City, State, Place, Review, User).all()
